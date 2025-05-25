@@ -71,10 +71,15 @@ def get_embedding(text: str) -> list:
 def process_text_files():
     """Process all text files and generate embeddings."""
     text_dir = os.getenv('TEXT_OUTPUT_DIR', '/text_output')
+    embeddings_dir = os.getenv('EMBEDDINGS_OUTPUT_DIR', '/embeddings_output')
     
     if not os.path.exists(text_dir):
         logging.error(f"Text output directory {text_dir} does not exist")
         return
+    
+    if not os.path.exists(embeddings_dir):
+        os.makedirs(embeddings_dir)
+        logging.info(f"Created embeddings output directory: {embeddings_dir}")
     
     # Process each text file
     for txt_file in Path(text_dir).glob("*.txt"):
@@ -87,15 +92,30 @@ def process_text_files():
             # Split into chunks
             chunks = chunk_text(content, CHUNK_SIZE)
             
+            # Store embeddings data
+            embeddings_data = []
+            
             # Process each chunk
             for chunk_id, chunk in enumerate(chunks):
                 embedding = get_embedding(chunk)
                 if embedding:
-                    # Print embedding with metadata
-                    print(f"\nFile: {txt_file.name}")
-                    print(f"Chunk ID: {chunk_id}")
-                    print(f"Embedding: {json.dumps(embedding)}")
-                    
+                    embeddings_data.append({
+                        "file_name": txt_file.name,
+                        "chunk_id": chunk_id,
+                        "chunk_content": chunk,
+                        "embedding": embedding
+                    })
+            
+            if embeddings_data:
+                # Create output filename
+                output_filename = os.path.join(embeddings_dir, f"{txt_file.stem}_embeddings.json")
+                
+                # Write to JSON file
+                with open(output_filename, 'w', encoding='utf-8') as f:
+                    json.dump(embeddings_data, f, ensure_ascii=False, indent=2)
+                
+                logging.info(f"Saved embeddings for {txt_file.name} to {output_filename}")
+                
         except Exception as e:
             logging.error(f"Error processing {txt_file.name}: {str(e)}")
 

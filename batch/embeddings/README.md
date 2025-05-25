@@ -26,6 +26,7 @@ docker build -t embeddings-generator .
 docker run -v $(pwd)/../text_output:/input \
           -v $(pwd):/app \
           -v $(pwd)/.env:/app/.env \
+          -v $(pwd)/../embeddings_output:/embeddings_output \
           embeddings-generator
 ```
 
