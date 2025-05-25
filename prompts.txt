@@ -1,9 +1,18 @@
 Project: LLM based Personal Tutor for Students based in India
 
-User story: create a python batch job to extract contents of pdf and write it to a text file.
-The python job should run in a container.
-The input pdf folder and the output text folder should be mounted.
-the applicaiton code should also be mounted.
+The application code should also be mounted.
 
+User story: create a batch job to process text files and generate embeddings
+
+As a developer
+I want to create a batch job that processes text files, chunks their content, and generates embeddings using OpenAI API
+So that we can create vector representations of our text content for semantic search and analysis
+Make all the changes inside a folder named embeddings inside the batch folder.
 
 Acceptance criteria:
+- [ ] Read text files from the text_output directory
+- [ ] Split text content into chunks of appropriate size
+- [ ] Generate embeddings for each chunk using OpenAI's embedding API
+- [ ] Print embeddings to console with file name and chunk ID
+- [ ] Handle API rate limits and errors gracefully
+- [ ] Log processing status and any errors
